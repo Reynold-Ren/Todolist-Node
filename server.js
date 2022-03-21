@@ -1,105 +1,36 @@
 const http = require('http');
-const { v4: uuidv4 } = require('uuid');
+const responseHandle = require('./responseHandle');
 const errHandle = require('./errorHandle');
+const handleAddTodo = require('./todos/handleAddTodo');
+const handleDeleteTodo = require('./todos/handleDeleteTodo');
+const handleEditTodo = require('./todos/handleEditTodo');
+const httpStatusCodes = require('./httpStatusCodes');
 const todos = [];
 
 const requestListenner = (req, res) => {
-	const headers = {
-		'Access-Control-Allow-Headers': 'Content-Type, Authorization, Content-Length, X-Requested-With',
-		'Access-Control-Allow-Origin': '*',
-		'Access-Control-Allow-Methods': 'PATCH, POST, GET, OPTIONS, DELETE',
-		'Content-Type': 'application/json'
-	}
 
-	let body = "";
-
-	req.on('data', chunk => {
-		body += chunk;
-	})
-
-	if ( req.url == '/todos' && req.method == 'GET' ) {
-		res.writeHead(200, headers);
-		res.write(JSON.stringify({
-			'status': "success",
-			"data": todos,
-		}));
-		res.end();
-	} else if ( req.url == '/todos' && req.method == 'POST' ) {
-		req.on('end', () => {
-			try {
-				const title = JSON.parse(body).title;
-				if ( title ) {
-					const todo = {
-						uuid: uuidv4(),
-						title
-					};
-					todos.push(todo);
-					res.writeHead(200, headers);
-					res.write(JSON.stringify({
-						'status': "success",
-						"data": todos,
-					}));
-					res.end();
-				} else {
-					errHandle(res);
-				}
-			} catch(err) {
-				errHandle(res);
-			}
-		})
-	} else if ( req.url == '/todos' && req.method == 'DELETE') {
-		todos.length = 0;
-		res.writeHead(200, headers);
-		res.write(JSON.stringify({
-			'status': "success",
-			"data": todos,
-		}));
-		res.end();
-	}	else if ( req.url.startsWith("/todos/") && req.method == 'DELETE') {
-		const id = req.url.split('/').pop();
-		const index = todos.findIndex(element => element.uuid == 	id);
-
-		if ( index !== -1 ) {
-			todos.splice(index, 1);
-			res.writeHead(200, headers);
-			res.write(JSON.stringify({
-				'status': "success",
-				"data": todos,
-			}));
-			res.end();
-		} else {
-			errHandle(res);
+	if ( req.url.indexOf('/todos') !== -1 ) {
+		switch(req.method) {
+			case 'GET':
+				responseHandle(res, httpStatusCodes.OK, todos);
+				break;
+			case 'POST':
+				handleAddTodo(req, res, todos);
+				break;
+			case 'DELETE':
+				handleDeleteTodo(req, res, todos);
+				break;
+			case 'PATCH':
+				handleEditTodo(req, res, todos);
+				break;
+			case 'OPTIONS':
+				responseHandle(res, httpStatusCodes.OK);
+				break;
+			default:
+				errHandle(res, httpStatusCodes.INTERNAL_SERVER, '錯誤的 Method.');
 		}
-	} else if ( req.url.startsWith("/todos/") && req.method == 'PATCH') {
-		req.on('end', () => {
-			try {
-				const todo = JSON.parse(body).title;
-				const id = req.url.split('/').pop();
-				const index = todos.findIndex(element => element.uuid == id);
-				console.log(todo, id, index);
-				if ( todo && index !== -1 ) {
-						todos[index].title = todo;
-
-						res.writeHead(200, headers);
-						res.write(JSON.stringify({
-							"status": "success",
-							"data": todos
-						}));
-						res.end();
-				} else {
-					errHandle(res);
-				}
-			} catch {
-				errHandle(res);
-			}
-		});
 	} else {
-		res.writeHead(404, headers);
-		res.write(JSON.stringify({
-			"status": "false",
-			"message": "查無此路徑"
-		}));
-		res.end();
+		errHandle(res, httpStatusCodes.NOT_FOUND, '查無此路由.');
 	}
 }
 
