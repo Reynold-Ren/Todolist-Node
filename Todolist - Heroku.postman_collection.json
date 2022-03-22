@@ -9,7 +9,19 @@
 			"name": "取得所有代辦",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "https://pure-shore-58233.herokuapp.com/todos",
+					"protocol": "https",
+					"host": [
+						"pure-shore-58233",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"todos"
+					]
+				}
 			},
 			"response": []
 		},
@@ -18,16 +30,23 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"Heroku 建置\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": "http://127.0.0.1:3005/todos",
-					"protocol": "http",
+					"raw": "https://pure-shore-58233.herokuapp.com/todos",
+					"protocol": "https",
 					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
+						"pure-shore-58233",
+						"herokuapp",
+						"com"
 					],
-					"port": "3005",
 					"path": [
 						"todos"
 					]
@@ -41,15 +60,13 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:3005/todos",
-					"protocol": "http",
+					"raw": "https://pure-shore-58233.herokuapp.com/todos",
+					"protocol": "https",
 					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
+						"pure-shore-58233",
+						"herokuapp",
+						"com"
 					],
-					"port": "3005",
 					"path": [
 						"todos"
 					]
@@ -63,15 +80,13 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "http://127.0.0.1:3005/todos/acf7e212-4e5d-472b-a5da-95f0e0135285",
-					"protocol": "http",
+					"raw": "https://pure-shore-58233.herokuapp.com/todos/acf7e212-4e5d-472b-a5da-95f0e0135285",
+					"protocol": "https",
 					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
+						"pure-shore-58233",
+						"herokuapp",
+						"com"
 					],
-					"port": "3005",
 					"path": [
 						"todos",
 						"acf7e212-4e5d-472b-a5da-95f0e0135285"
@@ -83,8 +98,21 @@
 		{
 			"name": "編輯單筆代辦",
 			"request": {
-				"method": "GET",
-				"header": []
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "https://pure-shore-58233.herokuapp.com/todos/",
+					"protocol": "https",
+					"host": [
+						"pure-shore-58233",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"todos",
+						""
+					]
+				}
 			},
 			"response": []
 		}
